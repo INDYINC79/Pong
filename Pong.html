@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pong!</title>
+		
+		<style>
+		</style>
+	</head>
+
+	<body id = "body">
+		<canvas id="canvas" width="900" height="500" style="border:1px solid #000000;">
+	</body>
+
+	<script>
+
+		var paddleRight = {
+			top: 200, 
+			bottom: 300,
+			left: 865,
+			right: 880
+		};
+
+		var paddleLeft = {
+			top: 200,
+			bottom: 300,
+			left: 15,
+			right: 30
+		};
+
+		var ball = {
+			centerX: 200,
+			centerY: 200,
+			radius: 10
+		};
+		var c = document.getElementById("canvas");
+		var ctx = c.getContext("2d");
+		var xDirection = 1;
+		var yDirection = 1;
+
+		// var pd1xLeft = 15;
+		// var pd1xRight = 30;
+		// var pd1yTop = 200;
+		// var pd1yBottom = 300;
+	
+		// var pd2xLeft = 865;
+		// var pd2xRight = 880;
+		// var pd2yTop = 200;
+		// var pd2yBottom = 300;
+
+		//ctx.arc(circleX,circleY,radius,0,2*Math.PI);
+		// var circlexLeft = circleX - radius;
+		// var circlexRight = circleX + radius;
+		// var circleyTop = circleY - radius;
+		// var circleyBottom = circleY + radius;
+
+		var player1Score = 0;
+		var player2Score = 0;
+
+		//moves paddles
+		var body = document.getElementById("body");
+
+		body.addEventListener('keydown', function(evt) {
+//			event.preventDefault();
+
+			switch (evt.keyCode) {
+			    case 65:
+			        paddleLeft.top -= 6;
+			        paddleLeft.bottom -= 6;
+
+			        break;
+			    case 90:
+			        paddleLeft.top += 6;
+			        paddleLeft.bottom += 6;
+			        break;
+			    case 75:
+			        paddleRight.top -= 6;
+			        paddleRight.bottom -= 6;
+			        break;
+			    case 77:
+			        paddleRight.top += 6;
+			        paddleRight.bottom += 6;
+			        break;
+			}
+		})
+
+		function draw(dt) {
+			//draws board
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			ctx.fillRect(paddleLeft.left,paddleLeft.top,15,100);
+			ctx.fillRect(paddleRight.left,paddleRight.top,15,100);
+
+			ctx.beginPath();
+			ctx.arc(ball.centerX,ball.centerY,ball.radius,0,2*Math.PI);
+			ctx.fillStyle = "black";
+			ctx.fill();
+			ctx.stroke();
+
+			ctx.font = "20px Arial";
+			ctx.fillText("Score",425,25);
+			ctx.fillText(player1Score, 400, 25);
+			ctx.fillText(player2Score, 490, 25);
+			
+			//checks out of bounds
+			if (ball.centerY + ball.radius >= canvas.height) {
+				ball.centerY = canvas.height - ball.radius;
+				yDirection *= -1;
+			}
+
+			if (ball.centerY <= 0 + ball.radius){
+				ball.centerY = ball.radius;
+				yDirection *= -1;
+			}
+
+			if (ball.centerX + ball.radius >= canvas.width){
+				player1Score ++;
+				xDirection = xDirection * -1;
+			}
+			if (ball.centerX <= 0 + ball.radius){
+				player2Score ++;
+				xDirection = xDirection * -1;
+			}
+			
+
+			//determines ball path
+
+			if (yDirection === 1){
+				ball.centerY += 5;	
+			}
+
+			if (yDirection === -1){
+				ball.centerY -= 5;	
+			}
+
+			if (xDirection === 1){
+				ball.centerX += 5;	
+			}
+
+			if (xDirection === -1){
+				ball.centerX -= 5;	
+			}
+
+			if(ball.centerX - ball.radius < paddleLeft.right && ball.centerY > paddleLeft.top && ball.centerY <= paddleLeft.bottom){
+				ball.centerX = paddleLeft.right + ball.radius;
+				xDirection = xDirection * -1;	
+			}
+
+			if(ball.centerX + ball.radius > paddleRight.left && ball.centerY > paddleRight.top && ball.centerY <= paddleRight.bottom){
+				ball.centerX = paddleRight.left - ball.radius;
+				xDirection = xDirection * -1;	
+			}
+            requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+
+
+	</script>
+</html>
